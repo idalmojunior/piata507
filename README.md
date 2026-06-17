@@ -58,10 +58,17 @@ Cole a URL do seu GitHub Pages e imprima para deixar no apartamento.
 
 ## 📸 Adicionando Fotos Reais
 
-As fotos atuais são do Unsplash (placeholder). Para usar fotos reais:
+Todas as imagens agora são **locais** (na pasta `assets/img/`) — isso garante que carregam sempre, sem depender de sites externos.
 
-1. Faça upload das fotos para a pasta `/assets/img/`
-2. Substitua as URLs `https://images.unsplash.com/...` pelos caminhos locais `assets/img/nome-da-foto.jpg`
+**Suas fotos reais já estão no site:**
+- `quarto-vista-mar.jpeg` → seção "O Studio" e hero
+- `piscina-rooftop.jpeg` → hero, seção "O Studio" e card da Piscina
+
+**Ilustrações temporárias (troque quando tiver fotos reais):**
+- `praia-piata.jpg`, `praia-itapua.jpg`, `praia-stella.jpg`, `praia-flamengo.jpg`
+- `academia.jpg`, `coworking.jpg`
+
+Para trocar: tire uma foto, renomeie com o **mesmo nome** do arquivo acima, e substitua na pasta `assets/img/`. O site usa automaticamente. Dica: mantenha as fotos abaixo de 500KB para carregar rápido (use [tinypng.com](https://tinypng.com) para comprimir).
 
 ---
 
