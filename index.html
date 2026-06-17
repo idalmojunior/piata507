@@ -27,7 +27,7 @@
     <li><a href="#comer">Onde Comer</a></li>
     <li><a href="#segredos">Dicas</a></li>
     <li><a href="#faq">FAQ</a></li>
-    <li><a href="https://wa.me/5571999999999" class="nav-wa" target="_blank">💬 WhatsApp</a></li>
+    <li><a href="https://wa.me/5571991205641" class="nav-wa" target="_blank">💬 WhatsApp</a></li>
   </ul>
   <div class="nav-burger" id="burger"><span></span><span></span><span></span></div>
 </nav>
@@ -59,7 +59,7 @@
       Criamos este espaço para que você tenha conforto, praticidade e momentos especiais durante sua estadia em Salvador. Neste guia você encontrará tudo o que precisa para aproveitar ao máximo sua experiência.
     </p>
     <div class="hero-btns">
-      <a href="https://wa.me/5571999999999" class="btn btn-wa" target="_blank">💬 Falar com o Anfitrião</a>
+      <a href="https://wa.me/5571991205641" class="btn btn-wa" target="_blank">💬 Falar com o Anfitrião</a>
       <a href="#primeiros" class="btn btn-ghost">📋 Primeiros Passos</a>
     </div>
   </div>
@@ -184,8 +184,8 @@
   <div class="container">
     <div class="sobre-grid">
       <div class="sobre-img-wrap fi">
-        <div class="sobre-img"></div>
-        <div class="sobre-img-accent"></div>
+        <img src="assets/img/quarto-vista-mar.jpeg" alt="Quarto com vista para o mar — Essencial Piatã 507" class="sobre-img" loading="lazy"/>
+        <img src="assets/img/piscina-rooftop.jpeg" alt="Piscina do rooftop com vista para o mar" class="sobre-img-accent" loading="lazy"/>
       </div>
       <div class="fi">
         <div class="sec-label" style="justify-content:flex-start"><span style="display:none"></span>O Studio</div>
@@ -272,7 +272,7 @@
     </div>
     <div class="areas-grid">
       <div class="area-card fi">
-        <div class="area-img" style="background:url('https://images.unsplash.com/photo-1570827959983-6e63f9e33d7e?w=600&q=80') center/cover"></div>
+        <div class="area-img" style="background:url('assets/img/piscina-rooftop.jpeg') center/cover"></div>
         <div class="area-body">
           <div class="area-name">🏊 Piscina</div>
           <div class="area-schedule">
@@ -373,6 +373,17 @@
     </div>
     <div class="weather-card fi" id="weatherCard">
       <div class="weather-loading">🌊 Carregando dados do clima...</div>
+    </div>
+
+    <div class="tide-card fi" id="tideCard">
+      <div class="tide-nav">
+        <button class="tide-nav-btn" id="tidePrev" aria-label="Dia anterior">‹</button>
+        <div class="tide-nav-date" id="tideDate">Hoje</div>
+        <button class="tide-nav-btn" id="tideNext" aria-label="Próximo dia">›</button>
+      </div>
+      <div class="tide-items" id="tideItems"></div>
+      <div class="tide-dots" id="tideDots"></div>
+      <div class="tide-footnote">⚙️ Dados aproximados — integração com API FEMAR preparada para previsões oficiais</div>
     </div>
   </div>
 </section>
@@ -631,7 +642,7 @@
       <div class="avaliacao-btns">
         <a href="#" class="btn btn-gold">🏠 Avaliar no Airbnb</a>
         <a href="#" class="btn btn-ghost">🏨 Avaliar no Booking</a>
-        <a href="https://wa.me/5571999999999" class="btn btn-wa" target="_blank">💬 Falar com o Anfitrião</a>
+        <a href="https://wa.me/5571991205641" class="btn btn-wa" target="_blank">💬 Falar com o Anfitrião</a>
       </div>
     </div>
   </div>
@@ -667,20 +678,20 @@
       <p class="sec-sub">Estamos aqui para tornar sua estadia perfeita</p>
     </div>
     <div class="contact-grid fi">
-      <a href="https://wa.me/5571999999999" class="contact-card" target="_blank">
+      <a href="https://wa.me/5571991205641" class="contact-card" target="_blank">
         <div class="contact-icon">💬</div>
         <div class="contact-type">WhatsApp</div>
-        <div class="contact-val">(71) 9 9999-9999</div>
+        <div class="contact-val">(71) 99120-5641</div>
       </a>
-      <a href="https://instagram.com/essencialpiata507" class="contact-card" target="_blank">
+      <a href="https://instagram.com/piata507" class="contact-card" target="_blank">
         <div class="contact-icon">📷</div>
         <div class="contact-type">Instagram</div>
-        <div class="contact-val">@essencialpiata507</div>
+        <div class="contact-val">@piata507</div>
       </a>
-      <a href="mailto:contato@essencialpiata507.com.br" class="contact-card">
+      <a href="mailto:idalmo@gmail.com" class="contact-card">
         <div class="contact-icon">📧</div>
         <div class="contact-type">E-mail</div>
-        <div class="contact-val">contato@essencialpiata507.com.br</div>
+        <div class="contact-val">idalmo@gmail.com</div>
       </a>
       <a href="tel:94" class="contact-card">
         <div class="contact-icon">🏢</div>
