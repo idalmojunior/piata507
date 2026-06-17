@@ -65,8 +65,9 @@ Todas as imagens agora são **locais** (na pasta `assets/img/`) — isso garante
 - `piscina-rooftop.jpeg` → hero, seção "O Studio" e card da Piscina
 
 **Ilustrações temporárias (troque quando tiver fotos reais):**
-- `praia-piata.jpg`, `praia-itapua.jpg`, `praia-stella.jpg`, `praia-flamengo.jpg`
-- `academia.jpg`, `coworking.jpg`
+- Praias: `praia-piata.jpg`, `praia-itapua.jpg`, `praia-stella.jpg`, `praia-flamengo.jpg`
+- Áreas: `academia.jpg`, `coworking.jpg`
+- Roteiros: `porto-barra.jpg`, `porto-barra-sunset.jpg`, `forte-sao-marcelo.jpg`, `canoa-havaiana.jpg`, `ribeira.jpg`, `sorveteria-ribeira.jpg`, `rio-vermelho.jpg`, `orla-piata.jpg`, `mercado-modelo.jpg`, `elevador-lacerda.jpg`, `pelourinho.jpg`, `igreja-bonfim.jpg`, `restaurante-lua-cheia.jpg`, `praia-do-forte.jpg`, `projeto-tamar.jpg`
 
 Para trocar: tire uma foto, renomeie com o **mesmo nome** do arquivo acima, e substitua na pasta `assets/img/`. O site usa automaticamente. Dica: mantenha as fotos abaixo de 500KB para carregar rápido (use [tinypng.com](https://tinypng.com) para comprimir).
 
