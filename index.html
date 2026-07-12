@@ -575,10 +575,10 @@ h1,h2,h3,.serif{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;l
    Troque os valores abaixo pelos dados reais antes de publicar.
    ==================================================================== */
 const CONFIG = {
-  whatsapp:   "5571999999999",          // ← número do anfitrião (só dígitos, com 55 + DDD)
+  whatsapp:   "5571991205641",          // número do anfitrião (55 + DDD 71 + 99120-5641)
   pixKey:     "sua-chave-pix-aqui",      // ← chave PIX (telefone, e-mail ou aleatória)
   instagram:  "piata507",                // ← @ do Instagram
-  portaria:   "92",                      // ← ramal/telefone da portaria
+  portaria:   "94",                      // ramal da portaria
   mapsLink:   "https://share.google/cKHPRpxXFHD98Rmuk", // ← localização "Como chegar"
   heroImage:  "",                        // ← (opcional) URL de uma foto p/ o topo. Vazio = gradiente do oceano.
   coords:     { lat: -12.9407, lon: -38.4012 }, // Praia de Piatã, Salvador
@@ -627,6 +627,7 @@ const I = {
   drop:'<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>',
   hot:'<path d="M14 14V5a2 2 0 0 0-4 0v9a4 4 0 1 0 4 0z"/>',
   game:'<rect x="3" y="7" width="18" height="11" rx="3"/><path d="M7 12h3M8.5 10.5v3M15 11.5h.01M17.5 13.5h.01"/>',
+  trash:'<path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13M10 11v6M14 11v6"/>',
   utensils:'<path d="M6 3v7a2 2 0 0 0 4 0V3M8 12v9M16 3c-1.5 0-2 2-2 4s.5 4 2 4v10"/>'
 };
 function svg(name,w=22){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="width:${w}px;height:${w}px">${I[name]||''}</svg>`}
@@ -654,13 +655,13 @@ const CONSUMO = [
 
 /* Comandos Alexa */
 const ALEXA = [
-  {ic:'music', c:'Alexa, toque uma música', d:'Sua trilha sonora'},
-  {ic:'music', c:'Alexa, momentos',         d:'Clima para namorar'},
-  {ic:'moon',  c:'Alexa, boa noite',        d:'Apaga luzes e TV'},
-  {ic:'home',  c:'Alexa, estou saindo',     d:'Desliga TV, luzes e ar'},
-  {ic:'cloud', c:'Alexa, previsão do tempo',d:'Como estará o dia'},
-  {ic:'volume',c:'Alexa, volume 1 / 2 / 3', d:'Ajusta o som'},
-  {ic:'stop',  c:'Alexa, stop',             d:'Para tudo'},
+  {ic:'music', c:'ECO, toque uma música', d:'Sua trilha sonora'},
+  {ic:'music', c:'ECO, momentos',         d:'Clima para namorar'},
+  {ic:'moon',  c:'ECO, boa noite',        d:'Apaga luzes e TV'},
+  {ic:'home',  c:'ECO, estou saindo',     d:'Desliga TV, luzes e ar'},
+  {ic:'cloud', c:'ECO, previsão do tempo',d:'Como estará o dia'},
+  {ic:'volume',c:'ECO, volume 1 / 2 / 3', d:'Ajusta o som'},
+  {ic:'stop',  c:'ECO, stop',             d:'Para tudo'},
 ];
 
 /* Restaurantes (clássicos de Salvador — abre no Google Maps) */
@@ -730,8 +731,9 @@ const ITEMS = [
   {id:'apresentacao', ic:'home',  label:'Apresentação', sub:'O apartamento'},
   {id:'wifi',         ic:'wifi',  label:'Wi-Fi',        sub:'Conecte-se'},
   {id:'checkin',      ic:'key',   label:'Check-in',     sub:'Sua chegada'},
-  {id:'alexa',        ic:'alexa', label:'Alexa',        sub:'Comandos de voz'},
+  {id:'alexa',        ic:'alexa', label:'ECO',          sub:'Comandos de voz'},
   {id:'regras',       ic:'rules', label:'Regras',       sub:'Boa convivência'},
+  {id:'lixo',         ic:'trash', label:'Descarte de lixo', sub:'Onde jogar'},
   {id:'consumo',      ic:'cup',   label:'Menu de Consumo', sub:'Frigobar'},
   {id:'condominio',   ic:'pool',  label:'Condomínio',   sub:'Lazer'},
   {id:'guia',         ic:'map',   label:'Guia da Região', sub:'Tudo por perto'},
@@ -805,7 +807,7 @@ const VIEWS = {
     <a class="btn wa block" href="${wa('Olá! Estou hospedado no Piatã 507. Acabei de chegar para o check-in.')}" target="_blank" rel="noopener">${svg('phone',17)} Avisar que cheguei</a>`,
 
   alexa:()=>`
-    ${head('Assistente de voz','Alexa','É só pedir. A Alexa cuida da música, das luzes, do clima e muito mais.')}
+    ${head('Assistente de voz','ECO','É só pedir. A ECO cuida da música, das luzes, do clima e muito mais.')}
     <div class="alexa-grid">
       ${ALEXA.map(a=>`<div class="alexa-cmd"><div class="a-ic">${svg(a.ic,18)}</div><div><q>${a.c}</q><small>${a.d}</small></div></div>`).join('')}
     </div>`,
@@ -818,11 +820,20 @@ const VIEWS = {
       <p>· Não esquecer carregadores nas tomadas</p>
       <p>· Fechar as janelas sempre que o ar estiver ligado</p>
     </div>
+    <div class="note"><b>Importante:</b> não desligue a régua de tomada ao lado da TV — ela deve permanecer sempre ligada.</div>
     <div class="card"><h3>Para manter tudo em ordem</h3>
       <p>· Não deixe roupas molhadas sobre camas ou sofá — use o varal</p>
       <p>· Após as 21h, evite som alto</p>
       <p>· Não é permitido pets nem visitantes não cadastrados</p>
     </div>`,
+
+  lixo:()=>`
+    ${head('Praticidade','Descarte de lixo','Onde deixar o lixo durante a sua estadia.')}
+    <div class="card gold">
+      <h3>Como descartar</h3>
+      <p>No elevador, aperte o botão <b>G</b>. A saída fica na <b>garagem do subsolo</b>, onde ficam as lixeiras do condomínio.</p>
+    </div>
+    <div class="row"><div class="r-ic">${svg('trash',18)}</div><div class="r-main"><b>Elevador → botão G</b><span>Garagem do subsolo</span></div></div>`,
 
   consumo:()=>`
     ${head('Frigobar','Menu de consumo','Sirva-se à vontade. Pague apenas o que consumir, com toda a comodidade.')}
