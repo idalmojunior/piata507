@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<meta name="theme-color" content="#06243a" />
+<title>Rota dos Dois · Piatã 507</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ====================================================================
+   ROTA DOS DOIS — jogo de conexão para casais · Piatã 507
+   HTML/CSS/JS puro · pass-and-play (mesmo celular) · GitHub Pages
+   ==================================================================== */
+:root{
+  --abyss:#06243a; --ocean:#0d4f6e; --ocean2:#13688c;
+  --gold:#c6a258; --gold-soft:#d8be86;
+  --sand:#efe2c4; --sand-deep:#e3d0a5; --foam:#eef5f4;
+  --coral:#d98a72; --coral-soft:#e7a892;
+  --p1:#c6a258;  /* veleiro / jogador 1 */
+  --p2:#13688c;  /* âncora / jogador 2 */
+  --text:#0c2a3a; --text-soft:#46606e;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:'Inter',system-ui,sans-serif;color:var(--text);
+  background:
+    radial-gradient(1000px 600px at 50% -10%, #12557a 0%, transparent 60%),
+    linear-gradient(175deg,#0a3a52 0%,#0d4f6e 45%,#06243a 100%);
+  min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;
+  padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+}
+h1,h2,h3,.serif{font-family:'Cormorant Garamond',serif;font-weight:600;line-height:1.05}
+.wrap{max-width:520px;margin:0 auto;padding:0 16px;position:relative}
+.eyebrow{font-size:.68rem;letter-spacing:.34em;text-transform:uppercase;color:var(--gold-soft);font-weight:600}
+button{font-family:inherit;cursor:pointer;border:none}
+.hidden{display:none !important}
+
+/* ---------- BOTÕES ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:15px 26px;border-radius:100px;font-weight:600;font-size:.95rem;background:var(--gold);color:#1a1304;box-shadow:0 12px 30px -10px rgba(198,162,88,.7);transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s ease;width:100%}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.4;pointer-events:none}
+.btn.ghost{background:transparent;color:var(--foam);border:1px solid rgba(216,190,134,.4);box-shadow:none}
+.btn svg{width:18px;height:18px}
+
+/* ====================================================================
+   TELA 1 — INTRO / NOMES
+   ==================================================================== */
+.screen{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:40px 0 30px;animation:fade .5s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.intro-card{background:rgba(255,255,255,.06);border:1px solid rgba(216,190,134,.18);border-radius:26px;padding:30px 24px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 30px 70px -30px rgba(0,0,0,.6);text-align:center;color:var(--foam)}
+.intro-mark{width:60px;height:60px;margin:0 auto 14px;border-radius:50%;border:1px solid rgba(216,190,134,.5);display:grid;place-items:center;color:var(--gold-soft)}
+.intro-mark svg{width:30px;height:30px}
+.intro-card h1{font-size:2.9rem;color:#fff;margin:.1em 0}
+.intro-card .heart{color:var(--coral-soft)}
+.intro-sub{color:rgba(238,245,244,.75);font-size:.92rem;max-width:30ch;margin:6px auto 0;font-weight:300}
+.name-fields{display:flex;flex-direction:column;gap:12px;margin:24px 0 8px;text-align:left}
+.name-field{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:12px 16px;display:flex;align-items:center;gap:13px}
+.name-field .pawn{flex:none}
+.name-field input{flex:1;background:none;border:none;outline:none;color:#fff;font-size:1.05rem;font-weight:500}
+.name-field input::placeholder{color:rgba(238,245,244,.5)}
+.name-field small{display:block;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-soft);margin-bottom:1px}
+.pawn{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;color:#fff}
+.pawn.sail{background:linear-gradient(140deg,var(--gold),#b8923f)}
+.pawn.anchor{background:linear-gradient(140deg,var(--ocean2),var(--ocean))}
+.pawn svg{width:22px;height:22px}
+.how{margin-top:20px;text-align:left;color:rgba(238,245,244,.8);font-size:.86rem;line-height:1.7}
+.how b{color:var(--gold-soft);font-weight:600}
+.how .heart{color:var(--coral-soft)}
+.tagline{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.25rem;color:var(--gold-soft);margin-top:16px}
+
+/* ====================================================================
+   TELA 2 — JOGO
+   ==================================================================== */
+#game{min-height:100vh;display:flex;flex-direction:column;padding:14px 0 20px}
+.hud{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.hud a.exit{color:rgba(238,245,244,.6);display:flex;align-items:center;gap:6px;font-size:.8rem}
+.hud a.exit svg{width:16px;height:16px}
+.hud .title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:#fff;text-align:center;flex:1}
+.hud .title small{display:block;font-family:'Inter';font-size:.55rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-soft);margin-top:-2px}
+
+/* placar dos jogadores */
+.players{display:flex;gap:10px;margin-bottom:14px}
+.player{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(216,190,134,.16);border-radius:16px;padding:11px 12px;display:flex;align-items:center;gap:10px;transition:all .3s ease;position:relative;overflow:hidden}
+.player.turn{border-color:var(--gold);background:rgba(198,162,88,.14);box-shadow:0 0 0 1px var(--gold) inset}
+.player.turn::after{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold)}
+.player .pawn{width:34px;height:34px}
+.player .p-info{min-width:0}
+.player .p-info b{display:block;color:#fff;font-size:.9rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.player .p-info span{font-size:.7rem;color:var(--gold-soft)}
+
+/* ---------- TABULEIRO ---------- */
+.board-frame{background:rgba(255,255,255,.05);border:1px solid rgba(216,190,134,.16);border-radius:22px;padding:14px;position:relative}
+#board{position:relative;width:100%;aspect-ratio:1/1.05}
+#trail{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.cell{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:14px;background:linear-gradient(150deg,#f6ecd4,#e8d8b2);border:1px solid rgba(140,110,60,.25);box-shadow:0 3px 8px -4px rgba(0,0,0,.4);color:#5a4a2e;transition:transform .2s ease}
+.cell .num{font-family:'Cormorant Garamond',serif;font-weight:600;line-height:1}
+.cell .cic{opacity:.8;margin-top:1px}
+.cell.start{background:linear-gradient(150deg,var(--ocean2),var(--ocean));color:#fff;border-color:transparent}
+.cell.finish{background:linear-gradient(150deg,#173a5e,var(--abyss));color:var(--gold-soft);border-color:var(--gold)}
+.cell.act-adv{background:linear-gradient(150deg,#8fc9dd,#4d9fbb);color:#083041;border-color:rgba(255,255,255,.4)}
+.cell.act-adv2{background:linear-gradient(150deg,var(--coral-soft),var(--coral));color:#4a1f13;border-color:rgba(255,255,255,.4)}
+.cell.act-again{background:linear-gradient(150deg,#2a3b4d,#16232f);color:var(--gold-soft);border-color:rgba(216,190,134,.4)}
+.cell.act-swap{background:linear-gradient(150deg,#7fb5cc,#3d7f9c);color:#06283a;border-color:rgba(255,255,255,.4)}
+.cell.lit{transform:scale(1.12);box-shadow:0 0 0 2px var(--gold),0 6px 16px -4px rgba(0,0,0,.5);z-index:5}
+
+/* peões no tabuleiro */
+.token{position:absolute;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;color:#fff;z-index:10;box-shadow:0 3px 8px rgba(0,0,0,.4);transition:left .32s cubic-bezier(.34,1.3,.5,1),top .32s cubic-bezier(.34,1.3,.5,1);border:2px solid #fff}
+.token svg{width:15px;height:15px}
+.token.sail{background:linear-gradient(140deg,var(--gold),#b8923f)}
+.token.anchor{background:linear-gradient(140deg,var(--ocean2),var(--ocean))}
+
+/* ---------- CONTROLE / DADO ---------- */
+.controls{margin-top:16px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.turn-label{color:#fff;font-size:.95rem;text-align:center;min-height:22px}
+.turn-label b{color:var(--gold-soft)}
+.dice{width:74px;height:74px;border-radius:18px;background:linear-gradient(145deg,#fff,#e9e2d0);box-shadow:0 10px 24px -8px rgba(0,0,0,.5),inset 0 -3px 6px rgba(140,110,60,.25);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:12px;gap:2px;cursor:pointer;transition:transform .2s ease}
+.dice:active{transform:scale(.94)}
+.dice.rolling{animation:roll .6s ease}
+@keyframes roll{0%{transform:rotate(0) scale(1)}25%{transform:rotate(-18deg) scale(1.08)}50%{transform:rotate(20deg) scale(.95)}75%{transform:rotate(-12deg) scale(1.05)}100%{transform:rotate(0) scale(1)}}
+.pip{border-radius:50%;background:var(--abyss);align-self:center;justify-self:center;width:11px;height:11px;opacity:0}
+.pip.on{opacity:1}
+.roll-hint{font-size:.75rem;color:rgba(238,245,244,.55)}
+
+/* ====================================================================
+   MODAL PERGUNTA / AÇÃO
+   ==================================================================== */
+.modal-bg{position:fixed;inset:0;z-index:100;background:rgba(4,18,30,.7);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;padding:22px}
+.modal-bg.open{display:flex;animation:fade .3s ease}
+.modal{width:100%;max-width:420px;background:linear-gradient(165deg,#fbf4e4,#f1e3c4);border-radius:26px;padding:30px 26px;text-align:center;box-shadow:0 40px 80px -30px rgba(0,0,0,.7);border:1px solid var(--gold);animation:pop .45s cubic-bezier(.2,1.1,.4,1) both;position:relative;overflow:hidden}
+@keyframes pop{from{opacity:0;transform:scale(.9) translateY(14px)}to{opacity:1;transform:none}}
+.modal .m-badge{width:52px;height:52px;border-radius:50%;margin:0 auto 14px;display:grid;place-items:center;font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;color:#fff}
+.modal .m-ic{margin:0 auto 12px;color:var(--coral)}
+.modal .m-ic svg{width:36px;height:36px}
+.modal .m-who{font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:6px}
+.modal .m-q{font-family:'Cormorant Garamond',serif;font-size:1.85rem;font-weight:600;color:var(--abyss);line-height:1.15;margin-bottom:6px}
+.modal .m-sub{color:var(--text-soft);font-size:.9rem;margin-bottom:22px}
+.modal .btn{background:var(--abyss);color:#fff;box-shadow:0 12px 26px -12px rgba(6,36,58,.8)}
+.modal.action .m-q{font-size:1.6rem}
+.modal-deco{position:absolute;inset:0;opacity:.06;background-image:radial-gradient(circle at 15% 20%,#5a4a2e 1.5px,transparent 1.5px),radial-gradient(circle at 75% 70%,#5a4a2e 1.5px,transparent 1.5px);background-size:40px 40px;pointer-events:none}
+
+/* ====================================================================
+   TELA FINAL — CHEGADA
+   ==================================================================== */
+#finish{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;padding:24px;background:linear-gradient(175deg,#123f5e,#0a2942 60%,#06243a);text-align:center;color:var(--foam)}
+#finish.open{display:flex;animation:fade .6s ease}
+.finish-inner{max-width:440px;animation:pop .7s cubic-bezier(.2,1.1,.4,1) both}
+.sunset{width:130px;height:130px;margin:0 auto 20px;border-radius:50%;background:radial-gradient(circle at 50% 60%,#ffd9a0,#f3a760 45%,#d98a72 75%,transparent 78%);position:relative}
+.sunset::after{content:"";position:absolute;left:-30px;right:-30px;bottom:20px;height:40px;background:linear-gradient(rgba(255,180,120,.4),transparent);filter:blur(6px)}
+#finish .eyebrow{color:var(--gold-soft)}
+#finish h2{font-size:3rem;color:#fff;margin:.1em 0 .2em}
+#finish p{color:rgba(238,245,244,.85);font-size:1.05rem;max-width:32ch;margin:0 auto 8px}
+#finish .fin-names{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.4rem;color:var(--gold-soft);margin:10px 0 22px}
+.confetti{position:fixed;top:-10px;width:9px;height:14px;z-index:130;pointer-events:none;border-radius:2px}
+.fin-actions{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+</style>
+</head>
+<body>
+
+<!-- ================= TELA 1 — INTRO ================= -->
+<section class="screen" id="intro">
+  <div class="wrap">
+    <div class="intro-card">
+      <div class="intro-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 17s2-1 4-1 3 1 6 1 4-1 6-1 4 1 4 1M2 12s2-1 4-1 3 1 6 1 4-1 6-1 4 1 4 1"/></svg>
+      </div>
+      <span class="eyebrow">Piatã 507 apresenta</span>
+      <h1>Rota dos Dois <span class="heart">♡</span></h1>
+      <p class="intro-sub">Um jogo para conectar corações e criar memórias inesquecíveis.</p>
+
+      <div class="name-fields">
+        <div class="name-field">
+          <div class="pawn sail" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v13M12 5l7 9H12M12 9l-5 5h5M4 18h16l-2 3H6z"/></svg></div>
+          <div style="flex:1"><small>Veleiro</small><input id="n1" type="text" placeholder="Nome do jogador 1" maxlength="14" autocomplete="off"></div>
+        </div>
+        <div class="name-field">
+          <div class="pawn anchor" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="5" r="2.4"/><path d="M12 7.4V21M6 12H4.5a7.5 7.5 0 0 0 15 0H18M8 10H16"/></svg></div>
+          <div style="flex:1"><small>Âncora</small><input id="n2" type="text" placeholder="Nome do jogador 2" maxlength="14" autocomplete="off"></div>
+        </div>
+      </div>
+
+      <div class="how">
+        <b>Como jogar</b><br>
+        <span class="heart">♡</span> Cada um tem o seu peão.<br>
+        <span class="heart">♡</span> Na sua vez, toque no dado e avance.<br>
+        <span class="heart">♡</span> Leia a pergunta da casa e conversem.<br>
+        <span class="heart">♡</span> Riam e aproveitem cada momento!
+      </div>
+      <div class="tagline">Não é sobre vencer, é sobre se conectar. ♡</div>
+
+      <button class="btn" id="startBtn" style="margin-top:22px">Começar a jornada
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TELA 2 — JOGO ================= -->
+<section id="game" class="hidden">
+  <div class="wrap">
+    <div class="hud">
+      <a class="exit" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Guia</a>
+      <div class="title">Rota dos Dois<small>Aproveitem cada momento</small></div>
+      <a class="exit" id="restartTop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></svg></a>
+    </div>
+
+    <div class="players">
+      <div class="player" id="pl1">
+        <div class="pawn sail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v13M12 5l7 9H12M12 9l-5 5h5M4 18h16l-2 3H6z"/></svg></div>
+        <div class="p-info"><b id="name1">Jogador 1</b><span id="pos1">Início</span></div>
+      </div>
+      <div class="player" id="pl2">
+        <div class="pawn anchor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="5" r="2.4"/><path d="M12 7.4V21M6 12H4.5a7.5 7.5 0 0 0 15 0H18M8 10H16"/></svg></div>
+        <div class="p-info"><b id="name2">Jogador 2</b><span id="pos2">Início</span></div>
+      </div>
+    </div>
+
+    <div class="board-frame">
+      <div id="board">
+        <svg id="trail" preserveAspectRatio="none"></svg>
+        <!-- células e peões inseridos via JS -->
+        <div class="token sail" id="tok1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v13M12 5l7 9H12M12 9l-5 5h5M4 18h16l-2 3H6z"/></svg></div>
+        <div class="token anchor" id="tok2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="5" r="2.4"/><path d="M12 7.4V21M6 12H4.5a7.5 7.5 0 0 0 15 0H18M8 10H16"/></svg></div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="turn-label" id="turnLabel">Vez de <b>—</b></div>
+      <div class="dice" id="dice" role="button" aria-label="Jogar o dado">
+        <span class="pip"></span><span class="pip"></span><span class="pip"></span>
+        <span class="pip"></span><span class="pip"></span><span class="pip"></span>
+        <span class="pip"></span><span class="pip"></span><span class="pip"></span>
+      </div>
+      <div class="roll-hint" id="rollHint">Toque no dado para jogar</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MODAL ================= -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal" id="modal">
+    <div class="modal-deco"></div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<!-- ================= FINAL ================= -->
+<div id="finish">
+  <div class="finish-inner">
+    <div class="sunset"></div>
+    <span class="eyebrow">Chegada · Rooftop Sunset</span>
+    <h2>Vocês chegaram!</h2>
+    <p class="fin-names" id="finNames"></p>
+    <p>Olhem para a vista, agradeçam o momento e façam uma foto juntos. ♡</p>
+    <div class="fin-actions">
+      <button class="btn" id="playAgain">Jogar novamente</button>
+      <a class="btn ghost" href="index.html">Voltar ao guia</a>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ====================================================================
+   CONTEÚDO DAS CASAS
+   0 = Início · 1..23 = casas · 24 = Chegada
+   ==================================================================== */
+const CELLS = {
+  0:{type:'start'},
+  1:{type:'q', q:'Qual foi o melhor momento da sua semana?'},
+  2:{type:'q', q:'Qual lugar do mundo você gostaria de conhecer?'},
+  3:{type:'q', q:'O que mais te faz relaxar?'},
+  4:{type:'q', q:'Conte uma lembrança feliz da infância.'},
+  5:{type:'q', q:'Qual foi a melhor viagem da sua vida?'},
+  6:{type:'act', kind:'adv',  n:1, q:'Avance uma casa!'},
+  7:{type:'q', q:'O que você mais gosta de fazer nas férias?'},
+  8:{type:'q', q:'Qual sonho você ainda quer realizar?'},
+  9:{type:'act', kind:'again', q:'Jogue novamente!'},
+  10:{type:'q', q:'O que te faz sentir em paz?'},
+  11:{type:'q', q:'Qual pessoa mais te inspirou na vida?'},
+  12:{type:'act', kind:'adv', n:2, q:'Avance duas casas!'},
+  13:{type:'q', q:'Qual foi o pôr do sol mais bonito que já viu?'},
+  14:{type:'q', q:'O que você gostaria de aprender este ano?'},
+  15:{type:'q', q:'Qual foi o melhor conselho que você já recebeu?'},
+  16:{type:'q', q:'Conte uma história engraçada.'},
+  17:{type:'q', q:'O que você mais valoriza em uma amizade?'},
+  18:{type:'q', q:'Qual lembrança gostaria de guardar para sempre?'},
+  19:{type:'q', q:'O que significa sucesso para você?'},
+  20:{type:'q', q:'O que você mais gostou nesta hospedagem?'},
+  21:{type:'act', kind:'swap', q:'Troquem de lugar no tabuleiro!'},
+  22:{type:'q', q:'Escolham um lugar para visitar juntos um dia.'},
+  23:{type:'q', q:'Qual foi o momento mais especial desta hospedagem?'},
+  24:{type:'finish'},
+};
+const LAST = 24;
+const COLS = 5, ROWS = 5; // serpentina 5x5 = 25 casas
+
+/* ====================================================================
+   ESTADO
+   ==================================================================== */
+let players = [
+  {name:'Jogador 1', pos:0, tokEl:null, cls:'sail'},
+  {name:'Jogador 2', pos:0, tokEl:null, cls:'anchor'},
+];
+let turn = 0;      // índice do jogador atual
+let busy = false;  // trava durante animações
+let cellCenters = []; // {x,y} de cada casa
+
+const $ = s=>document.querySelector(s);
+
+/* ---------- SVG helper p/ ícones das casas ---------- */
+const ICN = {
+  heart:'<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/>',
+  wave:'<path d="M2 14s2-1.5 4-1.5 3 1.5 6 1.5 4-1.5 6-1.5 4 1.5 4 1.5"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M4 12H2M22 12h-2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M17 7l1.4-1.4M5.6 18.4L7 17"/>',
+  dice:'<rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1.2" fill="currentColor"/><circle cx="15" cy="15" r="1.2" fill="currentColor"/>',
+  swap:'<path d="M7 4v13M7 4l-3 3M7 4l3 3M17 20V7M17 20l-3-3M17 20l3-3"/>',
+  flag:'<path d="M5 21V4M5 4h11l-2 3 2 3H5"/>',
+};
+function cicon(name){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ICN[name]}</svg>`}
+
+/* ====================================================================
+   MONTAGEM DO TABULEIRO (serpentina)
+   ==================================================================== */
+const board = $('#board');
+function cellRowCol(i){
+  const row = Math.floor(i/COLS);
+  const col = (row%2===0) ? (i%COLS) : (COLS-1-(i%COLS));
+  return {row,col};
+}
+function buildBoard(){
+  // remove células antigas
+  board.querySelectorAll('.cell').forEach(e=>e.remove());
+  const gapPct = 3;                 // espaçamento
+  const cw = (100 - gapPct*(COLS-1))/COLS;
+  const chPct = (100 - gapPct*(ROWS-1))/ROWS;
+  for(let i=0;i<=LAST;i++){
+    const {row,col} = cellRowCol(i);
+    const el = document.createElement('div');
+    el.className = 'cell';
+    el.dataset.i = i;
+    el.style.left = (col*(cw+gapPct))+'%';
+    el.style.top  = (row*(chPct+gapPct))+'%';
+    el.style.width = cw+'%';
+    el.style.height = chPct+'%';
+    const c = CELLS[i];
+    let inner = '';
+    if(c.type==='start'){ el.classList.add('start'); inner = `<div class="num" style="font-size:.72rem;letter-spacing:.05em">INÍCIO</div>`; }
+    else if(c.type==='finish'){ el.classList.add('finish'); inner = `<div class="cic" style="width:20px;height:20px">${cicon('flag')}</div><div class="num" style="font-size:.6rem;margin-top:2px">CHEGADA</div>`; }
+    else if(c.type==='act'){
+      const map={adv:c.n===2?'act-adv2':'act-adv', again:'act-again', swap:'act-swap'};
+      el.classList.add(map[c.kind]);
+      const ic={adv:c.n===2?'sun':'wave', again:'dice', swap:'swap'}[c.kind];
+      inner = `<div class="num">${i}</div><div class="cic" style="width:16px;height:16px">${cicon(ic)}</div>`;
+    } else {
+      inner = `<div class="num">${i}</div><div class="cic" style="width:13px;height:13px">${cicon('heart')}</div>`;
+    }
+    el.innerHTML = inner;
+    board.appendChild(el);
+  }
+  requestAnimationFrame(measure);
+}
+
+/* mede centros e desenha a trilha */
+function measure(){
+  cellCenters = [];
+  const bw = board.clientWidth, bh = board.clientHeight;
+  for(let i=0;i<=LAST;i++){
+    const el = board.querySelector(`.cell[data-i="${i}"]`);
+    if(!el){cellCenters.push({x:0,y:0});continue;}
+    cellCenters.push({ x: el.offsetLeft + el.offsetWidth/2, y: el.offsetTop + el.offsetHeight/2 });
+  }
+  // trilha pontilhada conectando as casas
+  const trail = $('#trail');
+  trail.setAttribute('viewBox',`0 0 ${bw} ${bh}`);
+  let d = `M ${cellCenters[0].x} ${cellCenters[0].y}`;
+  for(let i=1;i<=LAST;i++) d += ` L ${cellCenters[i].x} ${cellCenters[i].y}`;
+  trail.innerHTML = `<path d="${d}" fill="none" stroke="rgba(216,190,134,.5)" stroke-width="3" stroke-dasharray="2 8" stroke-linecap="round"/>`;
+  positionTokens(false);
+}
+
+/* posiciona peões (com pequeno desvio p/ não sobrepor) */
+function positionTokens(animate=true){
+  players.forEach((p,idx)=>{
+    const c = cellCenters[p.pos]; if(!c) return;
+    const off = idx===0 ? -8 : 8;
+    const other = players[1-idx];
+    const dx = (p.pos===other.pos) ? off : 0;
+    const t = p.tokEl;
+    if(!animate) t.style.transition='none'; else t.style.transition='';
+    t.style.left = (c.x + dx - 13) + 'px';
+    t.style.top  = (c.y - 13) + 'px';
+    if(!animate) requestAnimationFrame(()=>{ t.style.transition=''; });
+  });
+}
+
+/* ====================================================================
+   DADO
+   ==================================================================== */
+const PIP_MAP = {1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
+function showDie(n){
+  const pips = $('#dice').querySelectorAll('.pip');
+  pips.forEach((p,idx)=>p.classList.toggle('on', PIP_MAP[n].includes(idx)));
+}
+showDie(1);
+
+/* ====================================================================
+   FLUXO DE JOGO
+   ==================================================================== */
+function setTurn(idx){
+  turn = idx;
+  $('#pl1').classList.toggle('turn', idx===0);
+  $('#pl2').classList.toggle('turn', idx===1);
+  $('#turnLabel').innerHTML = `Vez de <b>${players[idx].name}</b>`;
+  $('#rollHint').textContent = 'Toque no dado para jogar';
+}
+function posLabel(pos){ return pos===0?'Início':(pos>=LAST?'Chegada':'Casa '+pos); }
+function updatePosLabels(){
+  $('#pos1').textContent = posLabel(players[0].pos);
+  $('#pos2').textContent = posLabel(players[1].pos);
+}
+
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
+
+async function rollDice(){
+  if(busy) return;
+  busy = true;
+  const dice = $('#dice');
+  dice.classList.add('rolling');
+  $('#rollHint').textContent = 'Rolando…';
+  // embaralha faces
+  for(let k=0;k<8;k++){ showDie(1+Math.floor(Math.random()*6)); await sleep(60); }
+  const n = 1 + Math.floor(Math.random()*6);
+  showDie(n);
+  dice.classList.remove('rolling');
+  await sleep(200);
+  await movePlayer(turn, n);
+  busy = false;
+}
+
+async function movePlayer(idx, steps){
+  const p = players[idx];
+  for(let s=0;s<steps;s++){
+    if(p.pos>=LAST) break;
+    p.pos++;
+    highlight(p.pos);
+    positionTokens(true);
+    updatePosLabels();
+    await sleep(300);
+  }
+  clearHighlight();
+  await resolveCell(idx);
+}
+
+function highlight(i){ clearHighlight(); board.querySelector(`.cell[data-i="${i}"]`)?.classList.add('lit'); }
+function clearHighlight(){ board.querySelectorAll('.cell.lit').forEach(e=>e.classList.remove('lit')); }
+
+async function resolveCell(idx){
+  const p = players[idx];
+  if(p.pos>=LAST){ return finish(); }
+  const cell = CELLS[p.pos];
+
+  if(cell.type==='q'){
+    openModal({who:p.name, q:cell.q, num:p.pos, action:false, onClose:()=>nextTurn()});
+  } else if(cell.type==='act'){
+    if(cell.kind==='adv'){
+      openModal({who:p.name, q:cell.q, num:p.pos, action:true, icon:cell.n===2?'sun':'wave',
+        btn:'Avançar', onClose:async()=>{ await movePlayer(idx, cell.n); }});
+    } else if(cell.kind==='again'){
+      openModal({who:p.name, q:cell.q, num:p.pos, action:true, icon:'dice',
+        btn:'Jogar de novo', onClose:()=>{ $('#rollHint').textContent='Toque no dado — você joga de novo!'; }});
+    } else if(cell.kind==='swap'){
+      openModal({who:p.name, q:cell.q, num:p.pos, action:true, icon:'swap',
+        btn:'Trocar de lugar', onClose:()=>{
+          const tmp = players[0].pos; players[0].pos = players[1].pos; players[1].pos = tmp;
+          positionTokens(true); updatePosLabels();
+          setTimeout(nextTurn, 400);
+        }});
+    }
+  }
+}
+
+function nextTurn(){
+  if(players[turn].pos>=LAST) return;
+  setTurn(1-turn);
+}
+
+/* ====================================================================
+   MODAL
+   ==================================================================== */
+let modalCb = null;
+function openModal({who,q,num,action,icon,btn,onClose}){
+  modalCb = onClose;
+  const m = $('#modal');
+  m.classList.toggle('action', !!action);
+  const badge = action
+    ? `<div class="m-ic">${cicon(icon)}</div>`
+    : `<div class="m-badge" style="background:linear-gradient(140deg,var(--gold),#b8923f)">${num}</div>`;
+  $('#modalBody').innerHTML = `
+    ${badge}
+    <div class="m-who">${action?'Casa especial':(who+' · sua vez')}</div>
+    <div class="m-q">${q}</div>
+    <div class="m-sub">${action?'':'Conversem, riam e aproveitem o momento. ♡'}</div>
+    <button class="btn" id="modalBtn">${btn||'Próximo'}</button>`;
+  $('#modalBg').classList.add('open');
+  $('#modalBtn').onclick = closeModal;
+}
+function closeModal(){
+  $('#modalBg').classList.remove('open');
+  const cb = modalCb; modalCb = null;
+  if(cb) cb();
+}
+
+/* ====================================================================
+   FINAL
+   ==================================================================== */
+function finish(){
+  $('#finNames').textContent = `${players[0].name} & ${players[1].name}`;
+  $('#finish').classList.add('open');
+  confetti();
+}
+function confetti(){
+  const cols = ['#c6a258','#d98a72','#13688c','#eef5f4','#e3d0a5'];
+  for(let i=0;i<80;i++){
+    const c = document.createElement('div');
+    c.className='confetti';
+    c.style.left = Math.random()*100+'vw';
+    c.style.background = cols[i%cols.length];
+    c.style.animation = `drop ${2+Math.random()*2}s ${Math.random()*1.2}s ease-in forwards`;
+    c.style.transform = `rotate(${Math.random()*360}deg)`;
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(), 5000);
+  }
+}
+const style = document.createElement('style');
+style.textContent = `@keyframes drop{to{top:105vh;transform:translateX(${'40px'}) rotate(720deg);opacity:0}}`;
+document.head.appendChild(style);
+
+/* ====================================================================
+   INÍCIO / EVENTOS
+   ==================================================================== */
+function startGame(){
+  const n1 = ($('#n1').value.trim() || 'Jogador 1').slice(0,14);
+  const n2 = ($('#n2').value.trim() || 'Jogador 2').slice(0,14);
+  players[0].name = n1; players[1].name = n2;
+  players[0].pos = 0; players[1].pos = 0;
+  players[0].tokEl = $('#tok1'); players[1].tokEl = $('#tok2');
+  $('#name1').textContent = n1; $('#name2').textContent = n2;
+  $('#intro').classList.add('hidden');
+  $('#game').classList.remove('hidden');
+  buildBoard();
+  updatePosLabels();
+  setTurn(0);
+}
+function resetGame(){
+  $('#finish').classList.remove('open');
+  players[0].pos = 0; players[1].pos = 0;
+  positionTokens(false); updatePosLabels(); setTurn(0);
+  $('#rollHint').textContent = 'Toque no dado para jogar';
+}
+
+$('#startBtn').addEventListener('click', startGame);
+$('#dice').addEventListener('click', rollDice);
+$('#playAgain').addEventListener('click', resetGame);
+$('#restartTop').addEventListener('click', ()=>{ if(confirm('Reiniciar o jogo?')) resetGame(); });
+$('#n2').addEventListener('keydown', e=>{ if(e.key==='Enter') startGame(); });
+window.addEventListener('resize', ()=>{ if(!$('#game').classList.contains('hidden')) measure(); });
+</script>
+</body>
+</html>
